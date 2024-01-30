@@ -99,12 +99,146 @@
         exploredNum +=1 
         exploredNumberP.elt.innerText = 'Explored Grids: ' + exploredNum
         arrAdd(this.seen , currentGrid)
-
-        
+        if(currentGrid.isEnd){
+            let path = [currentGrid]
+            while(!compareGrids(currentGrid, this.BoardObj.start)){
+                path.push(currentGrid.parent)
+                currentGrid = currentGrid.parent
+            }
+            console.log(`path count for ${this.algorithm} is`,path.length)
+            this.BoardObj.found(path)
+            return 
+        }
+        for(let neigbour of this.getNeighbours(currentGrid)){
+           if(arrContains(this.seen , neigbour)) continue
+           neigbour.parent = currentGrid
+           this.frontier.add(neigbour)
+        }
+        await sleep(5)
      }
 
-
-
-
+     if(this.frontier.isEmpty()){
+        console.log("Invalid Maze")
+        clearInterval(timeInterval)
+        visualising = false 
+     }
     }
+
+    heuristic = (grid1 , endGrid) => {
+        let winner = 0
+        for(let i=0;i<openSet.length ; i++){
+            if(openSet[i].f < openSet[winner].f){
+                winner = i 
+            }
+        }
+        return openSet[winner]
+    }
+
+   async greedy() {
+    let exploredNum = 0
+    let openSet = [this.BoardObj.start]
+    this.seen = []
+    this.BoardObj.reset()
+    this.BoardObj.start.f = this.heuristic(this.BoardObj.start , this.BoardObj.end)
+    while(openSet.length > 0){
+        if(!visualising) return 
+        await sleep(5)
+        let currentGrid = this.lowestFScore(openSet)
+
+        if(currentGrid.isEnd){
+            let path = [currentGrid]
+            while(!compareGrids(currentGrid, this.BoardObj.start)){
+              path.push(currentGrid.parent)
+              currentGrid = currentGrid.parent
+            }
+            console.log(`path count for Greddy best First search is`,path.length)
+            this.BoardObj.found(path)
+            return 
+        }
+        currentGrid.isExplored = true
+        exploredNum += 1
+        exploredNumberP.elt.innerText = 'Explored grids : ' + exploredNum
+        arrRemove(openSet , currentGrid)
+        arrAdd(this.seen , currentGrid)
+        for(let neigbour of this.getNeighbours(currentGrid)){
+          if(arrContains(this.seen , neigbour)) continue
+          neigbour.f = this.heuristic(neigbour , this.BoardObj.end)
+          neigbour.parent = currentGrid
+          arrAdd(openSet , neigbour)
+        }
+    }
+      console.log( 'Invalid Maze')
+      clearInterval(timeInterval)
+      visualising = false
+   }
+
+   async aStar() {
+    let exploredNum = 0
+    let openSet = [this.BoardObj.start]
+    this.seen = []
+    this.BoardObj.reset()
+    this.BoardObj.start.g = 0
+    this.BoardObj.start.f = this.heuristic(this.BoardObj.start , this.BoardObj.end)
+    while(openSet.length > 0){
+        if(!visualising) return 
+        await sleep(5)
+        let currentGrid = this.lowestFScore(openSet)
+
+        if(currentGrid.isEnd){
+            let path = [currentGrid]
+            while(!compareGrids(currentGrid, this.BoardObj.start)){
+              path.push(currentGrid.parent)
+              currentGrid = currentGrid.parent
+            }
+            console.log(`Path count for A* is`,path.length)
+            this.BoardObj.found(path)
+            return 
+        }
+        currentGrid.isExplored = true
+        exploredNum += 1
+        exploredNumberP.elt.innerText = 'Explored grids : ' + exploredNum
+        arrRemove(openSet , currentGrid)
+        arrAdd(this.seen , currentGrid)
+        for(let neigbour of this.getNeighbours(currentGrid)){
+          if(arrContains(this.seen , neigbour)) continue
+          let tempG = currentGrid.g + 1
+          if(!arrContains(openSet , neigbour)){
+            neigbour.g = tempG
+           neigbour.f = this.heuristic(neigbour , this.BoardObj.end)
+           neigbour.parent = currentGrid
+           arrAdd(openSet , neigbour)
+          } else if (tempG < neigbour.g) {
+             neigbour.g = tempG
+             neigbour.f = this.heuristic(neigbour , this.BoardObj.end) + neigbour.g
+             neigbour.parent = currentGrid
+          }
+        }
+    }
+      console.log( 'Invalid Maze')
+      clearInterval(timeInterval)
+      visualising = false
+   }
+   
+getNeighbours(grid){
+    let neigbours = []
+    for(let dy=-1 ; dy <= 1 ; dy++){
+        for(let dx=-1 ; dx <=1 ; dx++){
+            if(dy==0 && dx == 0) continue
+            if(dy==1 && dx == 1) continue
+            if(dy==-1 && dx == -1) continue
+            if(dy==1 && dx == -1) continue
+            if(dy==-1 && dx == 1) continue
+
+            let newi = grid.i + dy
+            let newj = grid.j + dx
+            if(newi >=0 && newi < ROWS && newj >=0 && newj < COLS){
+                if(!this.frontier.contains(this.board[newi][newj]) && !this.board[newi][newj].isWall){
+                    neigbours.push(this.board[newi][newj])
+                }
+            }
+        }
+    }
+    return neigbours
+}
+
  }

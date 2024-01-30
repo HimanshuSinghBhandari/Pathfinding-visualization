@@ -1,0 +1,138 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* user-select: none; */
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  font-size: 1rem;
+  align-items: center;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  padding: 5px 10px;
+  font-family: inherit;
+  color: black;
+  font-size: inherit;
+  background-color: white;
+  font-weight: inherit;
+  border: 2px solid black;
+  user-select: none;
+}
+
+#wallsContainer {
+  width: 100%;
+  display: flex;
+}
+
+#wallsContainer > :nth-child(1) {
+  width: 100%;
+  margin-right: 4px;
+  white-space: nowrap;
+}
+#wallsContainer > :nth-child(2) {
+  width: 100%;
+  white-space: nowrap;
+  margin-left: 4px;
+}
+
+.wallAnimation {
+  background-color: rgb(75, 75, 75);
+  color: white;
+}
+
+#sideDiv {
+  margin-left: 20px;
+  width: 25vw;
+}
+
+#btnContainer > * {
+  margin: 5px 0px;
+}
+
+#infoDiv {
+  text-align: justify;
+}
+
+#infoDiv > * {
+  margin: 8px 0px;
+}
+
+#btnContainer select {
+  font-size: inherit;
+  user-select: none;
+  border: 2px solid black;
+  color: black;
+  padding: 5px 10px;
+  text-align: center;
+  border-radius: 0px;
+  background-color: white;
+  font-family: inherit;
+  font-weight: inherit;
+}
+#phoneDiv {
+  position: absolute;
+  display: none;
+}
+
+#btnContainer {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.removeWall {
+  background-color: rgb(75, 75, 75);
+  color: white;
+}
+
+#metaDiv {
+  margin-bottom: 10px;
+  text-align: justify;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.heading3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  * {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1400px) {
+  #wallsContainer > :nth-child(1) {
+    white-space: normal;
+  }
+  #wallsContainer > :nth-child(2) {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 800px) {
+  body > :not(#phoneDiv) {
+    display: none;
+  }
+  body {
+    padding: 10px;
+    text-align: center;
+	overflow: hidden;
+	background-color: black;
+  }
+  #phoneDiv {
+    display: block;
+	color: white;
+  }
+}
